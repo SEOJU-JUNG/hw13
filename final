@@ -1,0 +1,148 @@
+var notOverLap = false;
+var obstacles = [];
+
+var player = {
+  x: 20,
+  y: 20,
+  width: 15,
+  height: 15,
+}
+
+function setup() {
+  createCanvas(600, 600);
+  generateMap();
+}
+
+function drawWin() {
+  if (notOverLap) {
+    draw_rect(win);
+    fill(50, 50, 50);
+  }
+}
+
+// green rec win start
+// green rec win start
+function genWin() {
+  win = {
+    x: random(400, 600 - 50),
+    y: random(400, 600 - 50),
+    width: 50,
+    height: 50,
+  }
+}
+// green rec win end
+// green rec win end
+
+
+// Pink borders  start
+// Pink borders  start
+// Pink borders  start
+function genObstacle() {
+  return {
+    x: random(100, width - 100),
+    y: random(100, height - 200),
+    width: random(10, 50),
+    height: random(50, 300)
+  }
+}
+// position of the pink borders= obstackels
+function generateMap() {
+  obstacles = [];
+  for (var i = 0; i < 50; i++) {
+    newObstacle = genObstacle();
+    newWin = genWin();
+    if (!overlapsWithObstacles(newObstacle)) {
+      obstacles.push(newObstacle);
+    }
+  }
+}
+function overlapsWithObstacles(placeholder) {
+  for (var i = 0; i < obstacles.length; i++) {
+    if (overlap(placeholder, obstacles[i])) {
+      return true;
+    }
+  }
+  return false;
+}
+// Pink borders  end
+// Pink borders  end
+// Pink borders  end
+
+
+function draw() {
+  background(242, 223, 230);
+  noStroke();
+  fill(34, 242, 166) // win rec color
+  draw_rect(win)
+  fill(255, 250, 0.200)
+  draw_rect(player);
+  fill(241, 155, 242) // border color
+
+  for (i = 0; i < obstacles.length; i++) {
+    draw_rect(obstacles[i]);
+  }
+  if (keyIsDown(UP_ARROW)) {
+    player.y = player.y - 3
+  }
+
+  if (keyIsDown(DOWN_ARROW)) {
+    player.y = player.y + 3
+  }
+
+
+  if (keyIsDown(LEFT_ARROW)) {
+    player.x = player.x - 3
+  }
+
+  if (keyIsDown(RIGHT_ARROW)) {
+    player.x = player.x + 3
+  }
+
+  if (overlapsWithObstacles(player)) {
+    player.x = 0;
+    player.y = 0;
+    generateMap();
+  }
+  
+  // text
+  if (overlap(player, win)) {
+    fill(1, 4, 64)
+    textSize(100)
+    text("WIN", 217, 320);
+    noLoop()
+    
+      // text
+  if (overlap(player, genObstacles)) {
+    fill(1, 4, 64)
+    textSize(100)
+    text("LOSE", 217, 320);
+    noLoop()
+  }
+  }
+}
+
+
+function draw_rect(r) {
+  rect(r.x, r.y, r.width, r.height)
+}
+
+function overlap(r1, r2) {
+  if (r1.y + r1.height < r2.y) {
+    // r1 is on top of r2
+    return false;
+  }
+  if (r1.y > r2.y + r2.height) {
+    // r1 is underneath r2 
+    return false;
+  }
+  if (r1.x + r1.width < r2.x) {
+    // r1 is on the left side of r2
+    return false;
+  }
+  if (r2.x + r2.width < r1.x) {
+    // r1 is on the right side of r2
+    return false;
+  }
+  // Otherwise r1 and r2 overlap
+  return true;
+}
